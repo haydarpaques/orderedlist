@@ -68,12 +68,12 @@ func (ol *OrderedList) Get(key string) (uint64, error) {
 	return ol.Rec[index].Value, nil
 }
 
-// Get returns key-value pair with lowest value on the list
+// GetLowest returns key-value pair with lowest value on the list
 func (ol *OrderedList) GetLowest() uint64 {
 	return ol.Rec[0].Value
 }
 
-// Get returns key-value pair with lowest value on the list
+// GetHighest returns key-value pair with highest value on the list
 func (ol *OrderedList) GetHighest() uint64 {
 	return ol.Rec[len(ol.Rec)-1].Value
 }
