@@ -98,6 +98,15 @@ func (ol *OrderedList) Update(key string, value uint64) error {
 	return nil
 }
 
+// Merge merges list passed to the parameter into the receiver.
+// Source list shall be left unchanged.
+// Duplicate key error will not be reported.
+func (ol *OrderedList) Merge(source *OrderedList) {
+	for _, record := range source.Rec {
+		ol.Insert(record.Key, record.Value)
+	}
+}
+
 // getPosition returns proper position (index) to be placed into struct
 func (ol *OrderedList) getPosition(value uint64) int {
 	index := -1
