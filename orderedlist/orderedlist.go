@@ -36,13 +36,7 @@ func (ol *OrderedList) Insert(key string, value uint64) error {
 	}
 
 	// Get proper index
-	index := -1
-	for i, record := range ol.Rec {
-		if value <= record.Value {
-			index = i
-			break
-		}
-	}
+	index := ol.getPosition(value)
 
 	if index == -1 {
 		// Append to the bottom of the list
@@ -102,6 +96,19 @@ func (ol *OrderedList) Update(key string, value uint64) error {
 	}
 
 	return nil
+}
+
+// getPosition returns proper position (index) to be placed into struct
+func (ol *OrderedList) getPosition(value uint64) int {
+	index := -1
+	for i, record := range ol.Rec {
+		if value <= record.Value {
+			index = i
+			break
+		}
+	}
+
+	return index
 }
 
 // getIndexByKey returns index of key-value pair in array by key
