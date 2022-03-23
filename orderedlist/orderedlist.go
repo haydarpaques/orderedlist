@@ -38,7 +38,7 @@ func (ol *OrderedList) Insert(key string, value uint64) error {
 	}
 
 	// Get proper index
-	index := ol.getPosition(value)
+	index := ol.getPositionFast(value, 0, ol.Len-1)
 
 	if index == -1 {
 		// Append to the bottom of the list
@@ -111,13 +111,40 @@ func (ol *OrderedList) Merge(source *OrderedList) {
 	}
 }
 
-// getPosition returns proper position (index) to be placed into struct
+// getPosition returns proper position (index) to be placed into struct.
+// Bad time complexity: linear ( O(n) ).
 func (ol *OrderedList) getPosition(value uint64) int {
 	index := -1
 	for i, record := range ol.Rec {
 		if value <= record.Value {
 			index = i
 			break
+		}
+	}
+
+	return index
+}
+
+// getPositionFast returns proper position (index) to be placed into struct.
+// Improved version of `getPosition`: sub-linear time complexity ( O(log n) ).
+func (ol *OrderedList) getPositionFast(value uint64, l, h int) int {
+	var index int
+
+	if h <= l {
+		index = l
+
+		if value > ol.Rec[l].Value {
+			index = l + 1
+		}
+	} else {
+		m := (l + h) / 2
+
+		if value == ol.Rec[m].Value {
+			index = m + 1
+		} else if value > ol.Rec[m].Value {
+			index = ol.getPositionFast(value, m+1, h)
+		} else {
+			index = ol.getPositionFast(value, l, m-1)
 		}
 	}
 
