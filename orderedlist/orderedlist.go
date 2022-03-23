@@ -16,6 +16,7 @@ type (
 	}
 
 	OrderedList struct {
+		Len         int
 		Bookkeeping map[string]bool
 		Rec         []Record
 	}
@@ -24,6 +25,7 @@ type (
 // New returns new (empty) instance of ordered list
 func New() OrderedList {
 	return OrderedList{
+		Len:         0,
 		Bookkeeping: make(map[string]bool),
 	}
 }
@@ -48,6 +50,7 @@ func (ol *OrderedList) Insert(key string, value uint64) error {
 		ol.Rec[index] = Record{key, value}
 	}
 
+	ol.Len += 1
 	ol.Bookkeeping[key] = true
 	return nil
 }
@@ -80,6 +83,7 @@ func (ol *OrderedList) Remove(key string) error {
 	}
 
 	ol.Rec = append(ol.Rec[:index], ol.Rec[index+1:]...)
+	ol.Len -= 1
 	delete(ol.Bookkeeping, key)
 
 	return nil
